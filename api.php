@@ -136,7 +136,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){				
-				mysql_query("DELETE FROM users WHERE user_id = $id");
+				mysqli_query($this->db, "DELETE FROM users WHERE user_id = $id");
 				$success = array('status' => "Success", "msg" => "Successfully one record deleted.");
 				$this->response($this->json($success),200);
 			}else
