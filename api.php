@@ -1,28 +1,6 @@
 <?php
     
-	/* 
-		This is an example class script proceeding secured API
-		To use this class you should keep same as query string and function name
-		Ex: If the query string value rquest=delete_user Access modifiers doesn't matter but function should be
-		     function delete_user(){
-				 You code goes here
-			 }
-		Class will execute the function dynamically;
-		
-		usage :
-		
-		    $object->response(output_data, status_code);
-			$object->_request	- to get santinized input 	
-			
-			output_data : JSON (I am using)
-			status_code : Send status message for headers
-			
-		Add This extension for localhost checking :
-			Chrome Extension : Advanced REST client Application
-			URL : https://chrome.google.com/webstore/detail/hgmloofddffdnphfgcellkdfbfbjeloo
-		
-		I used the below table for demo purpose.
-		
+	/*		
 		CREATE TABLE IF NOT EXISTS `users` (
 		  `user_id` int(11) NOT NULL AUTO_INCREMENT,
 		  `user_fullname` varchar(25) NOT NULL,
@@ -32,9 +10,15 @@
 		  PRIMARY KEY (`user_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
    
-               insert into users (user_id, user_fullname, user_email, user_password, user_status) values (1,"root","afdmoraes@gmail.com", "root", 1);
-               insert into users (user_id, user_fullname, user_email, user_password, user_status) values (2,"admin","afdmoraes@gmail.com", "admin", 0);
-               insert into users (user_id, user_fullname, user_email, user_password, user_status) values (3,"andre","afdmoraes@gmail.com", "12345", 1);
+               insert into users (user_fullname, user_email, user_password, user_status) values ("root","afdmoraes@gmail.com", "root", 1);
+               insert into users (user_fullname, user_email, user_password, user_status) values ("admin","afdmoraes@gmail.com", "admin", 0);
+			   insert into users (user_fullname, user_email, user_password, user_status) values ("andre","afdmoraes@gmail.com", "12345", 1);
+			   insert into users (user_fullname, user_email, user_password, user_status) values ("root","afdmoraes@gmail.com", "root", 1);
+               insert into users (user_fullname, user_email, user_password, user_status) values ("admin","afdmoraes@gmail.com", "admin", 0);
+			   insert into users (user_fullname, user_email, user_password, user_status) values ("andre","afdmoraes@gmail.com", "12345", 1);
+			   insert into users (user_fullname, user_email, user_password, user_status) values ("root","afdmoraes@gmail.com", "root", 1);
+               insert into users (user_fullname, user_email, user_password, user_status) values ("admin","afdmoraes@gmail.com", "admin", 0);
+               insert into users (user_fullname, user_email, user_password, user_status) values ("andre","afdmoraes@gmail.com", "12345", 1);
  	*/
 	
 	require_once("Rest.inc.php");
@@ -43,6 +27,7 @@
 	
 		public $data = "";
 		
+		// Dados do banco
 		const DB_SERVER = "localhost";
 		const DB_USER = "root";
 		const DB_PASSWORD = "";
@@ -56,7 +41,7 @@
 		}
 		
 		/*
-		 *  Database connection 
+		 *	Conexão ao banco
 		*/
 		private function dbConnect(){
 			$this->db = mysqli_connect(self::DB_SERVER,self::DB_USER,self::DB_PASSWORD,self::DB);
@@ -65,16 +50,14 @@
 		}
 		
 		/*
-		 * Public method for access api.
-		 * This method dynmically call the method based on the query string
-		 *
+		 * Esse método chama a função de acordo com o método
 		 */
 		public function processApi(){
 			$func = strtolower(trim(str_replace("/","",$_REQUEST['rquest'])));
 			if((int)method_exists($this,$func) > 0)
 				$this->$func();
 			else
-				$this->response('',404);				// If the method not exist with in this class, response would be "Page not found".
+				$this->response('',404);
 		}
 		
 		/* 
@@ -89,7 +72,7 @@
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
 			}
-			
+
 			$email = $this->_request['email'];		
 			$password = $this->_request['pwd'];
 			
@@ -110,6 +93,19 @@
 			// If invalid inputs "Bad Request" status message and reason
 			$error = array('status' => "Failed", "msg" => "Invalid Email address or Password");
 			$this->response($this->json($error), 400);
+		}
+
+		private function atualizar(){			
+			if($this->get_request_method() != "PUT"){
+				$this->response('', 406);
+			}
+
+			$name = $this->_request['name'];
+
+			if(!empty($name)){
+				$sql = mysqli_query($this->db, "SELECT * FROM user");
+			}
+
 		}
 		
 		private function users(){	
